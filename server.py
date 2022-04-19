@@ -170,7 +170,7 @@ def listProject():
     return ProjectListResponseSchema().dump({'project_list': response})
 
 @app.route('/project/create')
-def createProject(gist_id):
+def createProject():
     """create project
     ---
     post:
@@ -235,6 +235,8 @@ def getCreateProject(task_event_id):
         summary: Get task event create project info
         tags:
             - project
+        parameters:
+            - task_event_id
         description: Get task event create project info
         responses:
             200:
@@ -588,5 +590,5 @@ def swagger_docs(path=None):
 
 
 if __name__ == '__main__':
-    app.run(debug=True, host="0.0.0.0", port=9999)
+    app.run(debug=True, host="0.0.0.0", port=9997)
 

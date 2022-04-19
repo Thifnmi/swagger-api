@@ -1,0 +1,10 @@
+version: "3"
+
+services:
+  document:
+    restart: always
+    container_name: iam-document-v2
+    build: .
+    ports:
+      - "9999:9999"
+    

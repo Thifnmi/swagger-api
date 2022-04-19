@@ -47,9 +47,9 @@ OPENAPI_SPEC = """
 openapi: 3.0.2
 servers:
 - url: http://127.0.0.1:9999/
-- url: https://staging.bizflycloud.vn/api/iam
-- url: https://manage.bizflycloud.vn/api/iam
-- url: https://dev.bizflycloud.vn/api/iam
+- url: https://staging.bizflycloud.vn/api/iam_v2
+- url: https://manage.bizflycloud.vn/api/iam_v2
+- url: https://dev.bizflycloud.vn/api/iam_v2
 """
 
 settings = yaml.safe_load(OPENAPI_SPEC)

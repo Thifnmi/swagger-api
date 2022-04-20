@@ -83,6 +83,12 @@ class DefaultError(Schema):
     message = fields.Str()
     data = fields.Str()
 
+class UnauthorizedError(Schema):
+    success = fields.Boolean()
+    error_code = fields.Int()
+    message = fields.Str()
+    data = fields.Str()
+
 class PermissionDeny(Schema):
     success = fields.Boolean()
     error_code = fields.Int()
@@ -107,6 +113,11 @@ class ServerError(Schema):
     message = fields.Str()
     data = fields.Str()
 
+class TaskEvent(Schema):
+    task_event_id = fields.Str()
+    type = fields.Str()
+    status = fields.Str()
+
 @app.route('/projects')
 def listProject():
     """Get List of project
@@ -125,7 +136,7 @@ def listProject():
             401:
                 content:
                     application/json:
-                        schema: ProjectListResponseSchema
+                        schema: UnauthorizedError
             403:
                 description: Permission Deny
                 content:
@@ -178,76 +189,47 @@ def createProject():
         tags:
             - project
         description: create project
+        parameters:
+            -   name: user_uuid
+                in: header
+                description: UUID of user
+                required: true
+                schema:
+                    type: string
+            -   name: type
+                in: header
+                description: type of event
+                required: true
+                schema:
+                    type: string 
+            -   name: user_email
+                in: header
+                description: email of user
+                required: true
+                schema:
+                    type: string 
+            -   name: project_name
+                in: header
+                description: project name user want create
+                required: true
+                schema:
+                    type: string 
+            -   name: description
+                in: header
+                description: description of project
+                required: true
+                schema:
+                    type: string 
         responses:
             200:
                 description: Return a todo list
                 content:
                     application/json:
-                        schema: ProjectListResponseSchema
+                        schema: TaskEvent
             401:
                 content:
                     application/json:
-                        schema: ProjectListResponseSchema
-            403:
-                description: Permission Deny
-                content:
-                    application/json:
-                        schema: PermissionDeny
-            404:
-                description: Page Notfound
-                content:
-                    application/json:
-                        schema: PageNotFound
-            417:
-                description: Status Expectation Failed
-                content:
-                    application/json:
-                        schema: StatusExpectationFailed
-            500:
-                description: Server Error
-                content:
-                    application/json:
-                        schema: ServerError
-            default:
-                description: Status Expectation Failed
-                content:
-                    application/json:
-                        schema: DefaultError
-    """
-
-    dummy_data = [{
-        'id': 1,
-        'title': 'Finish this task',
-        'status': False
-    }, {
-        'id': 2,
-        'title': 'Finish that task',
-        'status': True
-    }]
-
-    return ProjectListResponseSchema().dump({'todo_list': dummy_data})
-
-@app.route('/project/<task_event_id>')
-def getEventProject(task_event_id):
-    """Get task event create project info
-    ---
-    get:
-        summary: Get task event create project info
-        tags:
-            - project
-        parameters:
-            - task_event_id
-        description: Get task event create project info
-        responses:
-            200:
-                description: info task event create project
-                content:
-                    application/json:
-                        schema: ProjectResponseSchema
-            401:
-                content:
-                    application/json:
-                        schema: ProjectListResponseSchema
+                        schema: UnauthorizedError
             403:
                 description: Permission Deny
                 content:
@@ -276,6 +258,72 @@ def getEventProject(task_event_id):
     """
 
     response = [{
+        'task_event_id': 1,
+        'status': "created"
+    }]
+
+    return TaskEvent().dump({'todo_list': response})
+
+@app.route('/project/<task_event_id>')
+def getEventProject(task_event_id):
+    """Get result task event info
+    ---
+    get:
+        summary: Get result task event info
+        tags:
+            - project
+        description: Get result task event info
+        parameters:
+            -   name: task_event_id
+                in: header
+                description: ID of task event
+                required: true
+                schema:
+                    type: string
+            -   name: type
+                in: header
+                description: type of event
+                required: true
+                schema:
+                    type: string
+        responses:
+            200:
+                description: task event info
+                content:
+                    application/json:
+                        schema: ProjectResponseSchema
+            401:
+                content:
+                    application/json:
+                        schema: UnauthorizedError
+            403:
+                description: Permission Deny
+                content:
+                    application/json:
+                        schema: PermissionDeny
+            404:
+                description: Page Notfound
+                content:
+                    application/json:
+                        schema: PageNotFound
+            417:
+                description: Status Expectation Failed
+                content:
+                    application/json:
+                        schema: StatusExpectationFailed
+            500:
+                description: Server Error
+                content:
+                    application/json:
+                        schema: ServerError
+            default:
+                description: Status Expectation Failed
+                content:
+                    application/json:
+                        schema: DefaultError 
+    """
+
+    response = [{
         'uuid': 'b0a6dc1e-dda8-4562-b62c-007bb7993f25',
         'origin_name': 'project1',
         'alias_name': "day la project 1",
@@ -294,6 +342,13 @@ def getProject(project_uuid):
         tags:
             - project
         description: Get info project
+        parameters:
+            -   name: project_uuid
+                in: path
+                description: UUID of project
+                required: true
+                schema:
+                    type: string 
         responses:
             200:
                 description: info project
@@ -303,7 +358,7 @@ def getProject(project_uuid):
             401:
                 content:
                     application/json:
-                        schema: ProjectListResponseSchema
+                        schema: UnauthorizedError
             403:
                 description: Permission Deny
                 content:
@@ -350,16 +405,41 @@ def updateProject(project_uuid):
         tags:
             - project
         description: Get info project
+        parameters:
+            -   name: user_uuid
+                in: header
+                description: UUID of user
+                required: true
+                schema:
+                    type: string 
+            -   name: project_name
+                in: header
+                description: project name user want create
+                required: true
+                schema:
+                    type: string
+            -   name: type
+                in: header
+                description: type of event
+                required: true
+                schema:
+                    type: string 
+            -   name: description
+                in: header
+                description: description of project
+                required: true
+                schema:
+                    type: string 
         responses:
             200:
                 description: info project
                 content:
                     application/json:
-                        schema: ProjectResponseSchema
+                        schema: TaskEvent
             401:
                 content:
                     application/json:
-                        schema: ProjectListResponseSchema
+                        schema: UnauthorizedError
             403:
                 description: Permission Deny
                 content:
@@ -397,30 +477,39 @@ def updateProject(project_uuid):
 
     return ProjectResponseSchema().dump({'project': response})
 
-    spec.path(view=listProject)
-    spec.path(view=getProject)
-    spec.path(view=createProject)
-    spec.path(view=todo3)
-
 @app.route('/project/delete/<project_uuid>')
 def deleteProject(project_uuid):
-    """Get info project
+    """Delete project
     ---
     delete:
-        summary: get info project
+        summary: Delete project
         tags:
             - project
-        description: Get info project
+        description: Delete project
+        parameters:
+            -   name: project_uuid
+                in: path
+                description: UUID of project
+                required: true
+                schema:
+                    type: string
+            -   name: type
+                in: header
+                description: type of event
+                required: true
+                schema:
+                    type: string 
         responses:
             200:
                 description: delete project
                 content:
                     application/json:
-                        schema: ProjectResponseSchema
+                        schema: TaskEvent
             401:
+                description: Access token is missing or invalid
                 content:
                     application/json:
-                        schema: ProjectListResponseSchema
+                        schema: UnauthorizedError
             403:
                 description: Permission Deny
                 content:
@@ -462,7 +551,7 @@ with app.test_request_context():
     spec.path(view=listProject)
     spec.path(view=getProject)
     spec.path(view=createProject)
-    spec.path(view=getEventProject)
+    spec.path(view=getEventProject, )
     spec.path(view=updateProject)
     spec.path(view=deleteProject)
 

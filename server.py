@@ -238,7 +238,7 @@ def createProject():
                     type: string 
         responses:
             200:
-                description: Return a todo list
+                description: Task event info
                 content:
                     application/json:
                         schema: TaskEvent

@@ -118,6 +118,21 @@ class TaskEvent(Schema):
     type = fields.Str()
     status = fields.Str()
 
+class UserOfProject(Schema):
+    uuid = fields.Str()
+    user_email = fields.Str()
+    description = fields.Str()
+    user_role = fields.Str()
+    is_active = fields.Boolean()
+    created_date = fields.DateTime()
+
+class ListUser(Schema):
+    list_user = fields.List(fields.Nested(UserOfProject))
+
+class ListUserOfProject(Schema):
+    project = fields.Nested(ProjectResponseSchema)
+    list_user = fields.List(fields.Nested(UserOfProject))
+
 @app.route('/projects')
 def listProject():
     """Get List of project
@@ -134,6 +149,7 @@ def listProject():
                     application/json:
                         schema: ProjectListResponseSchema
             401:
+                description: Access token is missing or invalid
                 content:
                     application/json:
                         schema: UnauthorizedError
@@ -227,6 +243,7 @@ def createProject():
                     application/json:
                         schema: TaskEvent
             401:
+                description: Access token is missing or invalid
                 content:
                     application/json:
                         schema: UnauthorizedError
@@ -293,6 +310,7 @@ def getEventProject(task_event_id):
                     application/json:
                         schema: ProjectResponseSchema
             401:
+                description: Access token is missing or invalid
                 content:
                     application/json:
                         schema: UnauthorizedError
@@ -356,6 +374,71 @@ def getProject(project_uuid):
                     application/json:
                         schema: ProjectResponseSchema
             401:
+                description: Access token is missing or invalid
+                content:
+                    application/json:
+                        schema: UnauthorizedError
+            403:
+                description: Permission Deny
+                content:
+                    application/json:
+                        schema: PermissionDeny
+            404:
+                description: Page Notfound
+                content:
+                    application/json:
+                        schema: PageNotFound
+            417:
+                description: Status Expectation Failed
+                content:
+                    application/json:
+                        schema: StatusExpectationFailed
+            500:
+                description: Server Error
+                content:
+                    application/json:
+                        schema: ServerError
+            default:
+                description: Status Expectation Failed
+                content:
+                    application/json:
+                        schema: DefaultError
+    """
+
+    response = [{
+        'uuid': 'b0a6dc1e-dda8-4562-b62c-007bb7993f25',
+        'origin_name': 'project1',
+        'alias_name': "day la project 1",
+        'description': "day la description project 1",
+        'role': "owner"
+    }]
+
+    return ProjectResponseSchema().dump({'project': response})
+
+@app.route('/project/<project_uuid>/users')
+def getUserProject(project_uuid):
+    """Get user of project
+    ---
+    get:
+        summary: get user of project
+        tags:
+            - project
+        description: Get user of project
+        parameters:
+            -   name: project_uuid
+                in: path
+                description: UUID of project
+                required: true
+                schema:
+                    type: string 
+        responses:
+            200:
+                description: List user of project
+                content:
+                    application/json:
+                        schema: ListUserOfProject
+            401:
+                description: Access token is missing or invalid
                 content:
                     application/json:
                         schema: UnauthorizedError
@@ -437,6 +520,7 @@ def updateProject(project_uuid):
                     application/json:
                         schema: TaskEvent
             401:
+                description: Access token is missing or invalid
                 content:
                     application/json:
                         schema: UnauthorizedError
@@ -551,9 +635,10 @@ with app.test_request_context():
     spec.path(view=listProject)
     spec.path(view=getProject)
     spec.path(view=createProject)
-    spec.path(view=getEventProject, )
+    spec.path(view=getEventProject)
     spec.path(view=updateProject)
     spec.path(view=deleteProject)
+    spec.path(view=getUserProject)
 
 @app.route('/docs')
 @app.route('/docs/<path:path>')
@@ -566,4 +651,3 @@ def swagger_docs(path=None):
 
 if __name__ == '__main__':
     app.run(debug=True, host="0.0.0.0", port=9997)
-

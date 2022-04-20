@@ -46,7 +46,7 @@ def hello_world():
 OPENAPI_SPEC = """
 openapi: 3.0.2
 servers:
-- url: http://127.0.0.1:9999/
+- url: http://127.0.0.1:9997/
 - url: https://staging.bizflycloud.vn/api/iam_v2
 - url: https://manage.bizflycloud.vn/api/iam_v2
 - url: https://dev.bizflycloud.vn/api/iam_v2
@@ -227,8 +227,8 @@ def createProject():
 
     return ProjectListResponseSchema().dump({'todo_list': dummy_data})
 
-@app.route('/project/create/<task_event_id>')
-def getCreateProject(task_event_id):
+@app.route('/project/<task_event_id>')
+def getEventProject(task_event_id):
     """Get task event create project info
     ---
     get:
@@ -402,62 +402,6 @@ def updateProject(project_uuid):
     spec.path(view=createProject)
     spec.path(view=todo3)
 
-@app.route('/project/update/<task_event_id>')
-def getUpdateProject(task_event_id):
-    """Get task event update project info
-    ---
-    get:
-        summary: Get task event update project info
-        tags:
-            - project
-        description: Get task event update project info
-        responses:
-            200:
-                description: info task event update project
-                content:
-                    application/json:
-                        schema: ProjectResponseSchema
-            401:
-                content:
-                    application/json:
-                        schema: ProjectListResponseSchema
-            403:
-                description: Permission Deny
-                content:
-                    application/json:
-                        schema: PermissionDeny
-            404:
-                description: Page Notfound
-                content:
-                    application/json:
-                        schema: PageNotFound
-            417:
-                description: Status Expectation Failed
-                content:
-                    application/json:
-                        schema: StatusExpectationFailed
-            500:
-                description: Server Error
-                content:
-                    application/json:
-                        schema: ServerError
-            default:
-                description: Status Expectation Failed
-                content:
-                    application/json:
-                        schema: DefaultError
-    """
-
-    response = [{
-        'uuid': 'b0a6dc1e-dda8-4562-b62c-007bb7993f25',
-        'origin_name': 'project1',
-        'alias_name': "day la project 1",
-        'description': "day la description project 1",
-        'role': "owner"
-    }]
-
-    return ProjectResponseSchema().dump({'project': response})
-
 @app.route('/project/delete/<project_uuid>')
 def deleteProject(project_uuid):
     """Get info project
@@ -514,71 +458,13 @@ def deleteProject(project_uuid):
 
     return ProjectResponseSchema().dump({'project': response})
 
-@app.route('/project/delete/<task_event_id>')
-def getDeleteProject(task_event_id):
-    """Get task event delete project info
-    ---
-    get:
-        summary: Get task event delete project info
-        tags:
-            - project
-        description: Get task event delete project info
-        responses:
-            200:
-                description: info task event delete project
-                content:
-                    application/json:
-                        schema: ProjectResponseSchema
-            401:
-                content:
-                    application/json:
-                        schema: ProjectListResponseSchema
-            403:
-                description: Permission Deny
-                content:
-                    application/json:
-                        schema: PermissionDeny
-            404:
-                description: Page Notfound
-                content:
-                    application/json:
-                        schema: PageNotFound
-            417:
-                description: Status Expectation Failed
-                content:
-                    application/json:
-                        schema: StatusExpectationFailed
-            500:
-                description: Server Error
-                content:
-                    application/json:
-                        schema: ServerError
-            default:
-                description: Status Expectation Failed
-                content:
-                    application/json:
-                        schema: DefaultError
-    """
-
-    response = [{
-        'uuid': 'b0a6dc1e-dda8-4562-b62c-007bb7993f25',
-        'origin_name': 'project1',
-        'alias_name': "day la project 1",
-        'description': "day la description project 1",
-        'role': "owner"
-    }]
-
-    return ProjectResponseSchema().dump({'project': response})
-
 with app.test_request_context():
     spec.path(view=listProject)
     spec.path(view=getProject)
     spec.path(view=createProject)
-    spec.path(view=getCreateProject)
+    spec.path(view=getEventProject)
     spec.path(view=updateProject)
-    spec.path(view=getUpdateProject)
     spec.path(view=deleteProject)
-    spec.path(view=getDeleteProject)
 
 @app.route('/docs')
 @app.route('/docs/<path:path>')

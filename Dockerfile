@@ -8,6 +8,6 @@ RUN pip install -r requirements.txt
 
 COPY . /app 
 
-EXPOSE 9999
+EXPOSE 9997
 
 ENTRYPOINT ["python3", "server.py"]

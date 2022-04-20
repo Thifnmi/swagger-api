@@ -5,6 +5,7 @@ from src.schema.error_schema import *
 from src.schema.project_schema import *
 from src.schema.taskEvent_schema import *
 from src.schema.user_schema import *
+from flask import jsonify
 
 
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
@@ -17,7 +18,7 @@ def listProject():
     get:
         summary: get list of project
         tags:
-            - project
+            - Projects
         description: Get List of project
         responses:
             200:
@@ -71,7 +72,7 @@ def listProject():
         'role': "admin"
     }]
 
-    return ProjectListResponseSchema().dump({'project_list': response})
+    return jsonify({"list project": response})
 
 @bp.route('/v2/project/create')
 def createProject():
@@ -80,7 +81,7 @@ def createProject():
     post:
         summary: create project
         tags:
-            - project
+            - Projects
         description: create project
         parameters:
             -   name: user_uuid
@@ -156,7 +157,7 @@ def createProject():
         'status': "created"
     }]
 
-    return TaskEvent().dump({'todo_list': response})
+    return TaskEvent().dump({'Task event': response})
 
 @bp.route('/v2/project/<task_event_id>')
 def getEventProject(task_event_id):
@@ -165,7 +166,7 @@ def getEventProject(task_event_id):
     get:
         summary: Get result task event info
         tags:
-            - project
+            - Projects
         description: Get result task event info
         parameters:
             -   name: task_event_id
@@ -235,7 +236,7 @@ def getProject(project_uuid):
     get:
         summary: get info project
         tags:
-            - project
+            - Projects
         description: Get info project
         parameters:
             -   name: project_uuid
@@ -281,14 +282,16 @@ def getProject(project_uuid):
                     application/json:
                         schema: DefaultError
     """
-
-    response = [{
-        'uuid': 'b0a6dc1e-dda8-4562-b62c-007bb7993f25',
-        'origin_name': 'project1',
-        'alias_name': "day la project 1",
-        'description': "day la description project 1",
-        'role': "owner"
-    }]
+    print(1)
+    if project_uuid:
+        response = [{
+            'uuid': 'b0a6dc1e-dda8-4562-b62c-007bb7993f25',
+            'origin_name': 'project1',
+            'alias_name': "day la project 1",
+            'description': "day la description project 1",
+            'role': "owner"
+        }]
+    print(1)
 
     return ProjectResponseSchema().dump({'project': response})
 
@@ -299,7 +302,7 @@ def getUserProject(project_uuid):
     get:
         summary: get user of project
         tags:
-            - project
+            - Projects
         description: Get user of project
         parameters:
             -   name: project_uuid
@@ -363,7 +366,7 @@ def updateProject(project_uuid):
     put:
         summary: get info project
         tags:
-            - project
+            - Projects
         description: Get info project
         parameters:
             -   name: user_uuid
@@ -445,7 +448,7 @@ def deleteProject(project_uuid):
     delete:
         summary: Delete project
         tags:
-            - project
+            - Projects
         description: Delete project
         parameters:
             -   name: project_uuid

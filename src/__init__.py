@@ -53,10 +53,12 @@ def create_app():
     app.register_blueprint(bp)
 
     from src.api.project import listProject, getEventProject, getProject, getUserProject, updateProject, deleteProject, createProject
+    from src.api.healthCheck import healthCheck
 
     with app.test_request_context():
+        spec.path(view=healthCheck)
         spec.path(view=listProject)
-        spec.path(view=getProject)
+        spec.path(view=getProject, value="b0a6dc1e-dda8-4562-b62c-007bb7993f25")
         spec.path(view=getUserProject)
         spec.path(view=getEventProject)
         spec.path(view=createProject)

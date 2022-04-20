@@ -50,7 +50,7 @@ CREATE unique INDEX gum_role_map_uuid_idx ON gum_role_map(uuid);
 CREATE TABLE resources (
     id int not null AUTO_INCREMENT,
     uuid varchar(36) not null,
-    enum varchar(10),
+    type varchar(10),
     service_type varchar(100),
     service_name varchar(100),
     endpoint varchar(200),

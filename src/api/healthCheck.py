@@ -1,6 +1,5 @@
 import logging
 import sys
-import json
 from xmlrpc.client import boolean
 from src.api import bp
 from src.schema.error_schema import *

@@ -17,7 +17,7 @@ def create_app():
 
     OPENAPI_SPEC = """
         servers:
-        - url: http://127.0.0.1:9997/
+        - url: http://192.168.17.112:9997/
         - url: https://staging.bizflycloud.vn/api/iam
         - url: https://manage.bizflycloud.vn/api/iam
         - url: https://dev.bizflycloud.vn/api/iam
@@ -52,15 +52,16 @@ def create_app():
     from src.api import bp
     app.register_blueprint(bp)
 
-    from src.api.project import listProject, getEventProject, getProject, getUserProject, updateProject, deleteProject, createProject
+    from src.api.project import listProject, getProject, getUserProject, updateProject, deleteProject, createProject
     from src.api.healthCheck import healthCheck
+    from src.api.taskEventId import getTaskEvent
 
     with app.test_request_context():
         spec.path(view=healthCheck)
+        spec.path(view=getTaskEvent)
         spec.path(view=listProject)
-        spec.path(view=getProject, value="b0a6dc1e-dda8-4562-b62c-007bb7993f25")
+        spec.path(view=getProject)
         spec.path(view=getUserProject)
-        spec.path(view=getEventProject)
         spec.path(view=createProject)
         spec.path(view=updateProject)
         spec.path(view=deleteProject)

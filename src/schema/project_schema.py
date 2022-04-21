@@ -1,4 +1,5 @@
 from marshmallow import Schema, fields
+from .utils import *
 
 
 class ProjectResponseSchema(Schema):
@@ -9,4 +10,8 @@ class ProjectResponseSchema(Schema):
     role = fields.Str()
 
 class ProjectListResponseSchema(Schema):
-    project_list = fields.List(fields.Nested(ProjectResponseSchema))
+    success = fields.Boolean()
+    message = fields.Str()
+    error_code = fields.Int()
+    data = fields.List(fields.Nested(ProjectResponseSchema))
+    metadata = fields.Nested(Metadata)

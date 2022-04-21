@@ -1,6 +1,7 @@
 from marshmallow import Schema, fields
 
 from .project_schema import ProjectResponseSchema
+from .utils import *
 
 class UserOfProject(Schema):
     uuid = fields.Str()
@@ -14,5 +15,9 @@ class ListUser(Schema):
     list_user = fields.List(fields.Nested(UserOfProject))
 
 class ListUserOfProject(Schema):
+    success = fields.Boolean()
+    message = fields.Str()
+    error_code = fields.Int()
     project = fields.Nested(ProjectResponseSchema)
-    list_user = fields.List(fields.Nested(UserOfProject))
+    data = fields.List(fields.Nested(UserOfProject))
+    metadata = fields.Nested(Metadata)

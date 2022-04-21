@@ -413,6 +413,13 @@ def getUserProject(project_uuid):
             "success": boolean(1),
             "message": "List user in project %s success",
             "error_code": 0,
+            "project": {
+                        'uuid': '1',
+                        'origin_name': 'project1',
+                        'alias_name': "day la project 1",
+                        'description': "day la description project 1",
+                        'role': "owner"
+                    },
             "data": [{
                         'uuid': 'b0a6dc1e-dda8-4562-b62c-007bb7993f25',
                         'user_email': 'test@gmail.com',
@@ -428,7 +435,7 @@ def getUserProject(project_uuid):
                         'is_active': boolean(1),
                         'created_at': '2022-04-21T02:30:28.911Z'
                     },{
-                        'uuid': 'b0a6dc1e-dda8-4562-b62c-007bb7993f25',
+                        'uuid': 'b0a6dc1e-dda8-4562-b62c-007bb7993f27',
                         'user_email': 'test@gmail.com',
                         'description': "day la role custom",
                         'role': "dev",

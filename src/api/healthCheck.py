@@ -10,7 +10,7 @@ from flask import jsonify
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 
 
-@bp.route('/v2/healthcheck')
+@bp.route('/healthcheck')
 def healthCheck():
     """Get healthcheck service
     ---

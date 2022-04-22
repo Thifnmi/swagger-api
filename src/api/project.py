@@ -11,7 +11,7 @@ from flask import jsonify, request
 logging.basicConfig(stream=sys.stdout, level=logging.INFO)
 
 
-@bp.route('/v2/projects')
+@bp.route('/projects')
 def listProject():
     """Get List of project
     ---
@@ -159,7 +159,7 @@ def listProject():
 
     return jsonify(response)
 
-@bp.route('/v2/project/create', methods=["POST"])
+@bp.route('/project/create', methods=["POST"])
 def createProject():
     """create project
     ---
@@ -190,7 +190,6 @@ def createProject():
             -   name: description
                 in: header
                 description: description of project
-                required: true
                 schema:
                     type: string 
         responses:
@@ -198,7 +197,7 @@ def createProject():
                 description: Task event info
                 content:
                     application/json:
-                        schema: TaskEvent
+                        schema: TaskEventCreateProject
             401:
                 description: Access token is missing or invalid
                 content:
@@ -231,18 +230,27 @@ def createProject():
                         schema: DefaultError
     """
 
-    payload = request.get_json()
-    print(payload)
+    payload = {
+        "user_uuid": request.headers.get("user_uuid"),
+        "user_email": request.headers.get("user_email"),
+        "project_name": request.headers.get("project_name"),
+        "description": request.headers.get("user_uuid")
+    }
 
-    response = [{
-        'task_event_id': 1,
-        'status': 'success',
-        'type': 'create'
+    response = [
+        {
+            "task_event": {
+                'task_event_id': 1,
+                'status': 'success',
+                'type': 'create'
+            }
+        }, {
+        'project': payload
     }]
 
-    return jsonify({'Task event': response})
+    return jsonify(response)
 
-@bp.route('/v2/project/<project_uuid>')
+@bp.route('/project/<project_uuid>')
 def getProject(project_uuid):
     """Get info project
     ---
@@ -306,7 +314,7 @@ def getProject(project_uuid):
 
     return jsonify(response)
 
-@bp.route('/v2/project/<project_uuid>/users')
+@bp.route('/project/<project_uuid>/users')
 def getUserProject(project_uuid):
     """Get user of project
     ---
@@ -455,7 +463,7 @@ def getUserProject(project_uuid):
 
     return jsonify(response)
 
-@bp.route('/v2/project/update/<project_uuid>', methods=['PUT'])
+@bp.route('/project/update/<project_uuid>', methods=['PUT'])
 def updateProject(project_uuid):
     """Get info project
     ---
@@ -465,12 +473,12 @@ def updateProject(project_uuid):
             - Projects
         description: Get info project
         parameters:
-            -   name: user_uuid
-                in: header
-                description: UUID of user
+            -   name: project_uuid
+                in: path
+                description: UUID of project
                 required: true
                 schema:
-                    type: string 
+                    type: string
             -   name: project_name
                 in: header
                 description: project name user want create
@@ -480,7 +488,6 @@ def updateProject(project_uuid):
             -   name: description
                 in: header
                 description: description of project
-                required: true
                 schema:
                     type: string 
         responses:
@@ -488,7 +495,7 @@ def updateProject(project_uuid):
                 description: info project
                 content:
                     application/json:
-                        schema: TaskEvent
+                        schema: TaskEventUpdateProject
             401:
                 description: Access token is missing or invalid
                 content:
@@ -520,16 +527,30 @@ def updateProject(project_uuid):
                     application/json:
                         schema: DefaultError
     """
-
+    payload = {
+        "project_name": request.headers.get("project_name"),
+        "description": request.headers.get("description")
+    }
+    before_values = {
+        'project_name': 'project1',
+        'description': "day la description project 1"
+    }
     response = [{
-        'task_event_id': 2,
-        'status': 'success',
-        'type': 'update'
+        "task_event": {
+            'task_event_id': 2,
+            'status': 'success',
+            'type': 'update'
+        }
+    }, {
+        "project": {
+            "before_values": before_values,
+            "after_values": payload
+        }
     }]
 
     return jsonify(response)
 
-@bp.route('/v2/project/delete/<project_uuid>', methods=['DELETE'])
+@bp.route('/project/delete/<project_uuid>', methods=['DELETE'])
 def deleteProject(project_uuid):
     """Delete project
     ---
@@ -550,7 +571,7 @@ def deleteProject(project_uuid):
                 description: delete project
                 content:
                     application/json:
-                        schema: TaskEvent
+                        schema: TaskEventDeleteProject
             401:
                 description: Access token is missing or invalid
                 content:
@@ -583,10 +604,21 @@ def deleteProject(project_uuid):
                         schema: DefaultError
     """
 
-    response = [{
-        'task_event_id': 3,
-        'status': 'success',
-        'type': 'delete'
-    }]
+    project = {
+        'project_name': 'project1',
+        'description': "day la description project 1"
+    }
+
+    response = [
+        {
+            "task_event": {
+                'task_event_id': 3,
+                'status': 'success',
+                'type': 'delete'
+            }
+        }, {
+            "project": project
+            }
+    ]
 
     return jsonify(response)

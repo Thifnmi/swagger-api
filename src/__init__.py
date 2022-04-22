@@ -8,19 +8,21 @@ from apispec.ext.marshmallow import MarshmallowPlugin
 from apispec_webframeworks.flask import FlaskPlugin
 from flask import Flask, jsonify, render_template, send_from_directory
 
+from src.api.taskEventId import listTaskEvent
+
 
 env = os.getenv("ENV", "development")
 
 def create_app():
     app = Flask(__name__, template_folder='../swagger/templates')
     app.config['JSON_SORT_KEYS'] = False
-
+    app.config["BASE_URL"] = "/api/iam/v2/"
     OPENAPI_SPEC = """
         servers:
-        - url: http://192.168.17.112:9997/
-        - url: https://staging.bizflycloud.vn/api/iam
-        - url: https://manage.bizflycloud.vn/api/iam
-        - url: https://dev.bizflycloud.vn/api/iam
+        - url: http://127.0.0.1:9997/
+        - url: https://staging2.bizflycloud.vn/api/iam/v2
+        - url: https://manage.bizflycloud.vn/api/iam/v2
+        - url: https://dev.bizflycloud.vn/api/iam/v2
     """
 
     settings = yaml.safe_load(OPENAPI_SPEC)
@@ -59,6 +61,7 @@ def create_app():
     with app.test_request_context():
         spec.path(view=healthCheck)
         spec.path(view=getTaskEvent)
+        spec.path(view=listTaskEvent)
         spec.path(view=listProject)
         spec.path(view=getProject)
         spec.path(view=getUserProject)
@@ -68,10 +71,13 @@ def create_app():
 
     @app.route('/docs')
     @app.route('/docs/<path:path>')
-    def swagger_docs(path=None):
+    @app.route('/<path:uri>/docs/<path:path>')
+    def swagger_docs(uri=None, path=None):
         if not path or path == 'index.html':
-            return render_template('index.html', base_url='/docs')
+            if uri == None:
+                return render_template('index.html', base_url=f"/docs")
+            else:
+                return render_template('index.html', base_url=f"{uri}/docs")
         else:
             return send_from_directory('../swagger/static', path)
-
     return app

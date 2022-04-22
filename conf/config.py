@@ -30,7 +30,7 @@ class BaseConfig(object):
     )
     USE_LOG_FILE = eval(_get_config_value("USE_LOG_FILE", "False"))
     HOST = _get_config_value("HOST", "0.0.0.0")
-    PORT = _get_config_value("PORT", 56262)
+    PORT = _get_config_value("PORT", 9997)
     SENTRY_DSN = _get_config_value("SENTRY_DSN", "")
     JSON_SORT_KEYS = _get_config_value("JSON_SORT_KEYS", "False")
 

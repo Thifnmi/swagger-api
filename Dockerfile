@@ -1,4 +1,5 @@
-FROM python:3.10
+FROM hub.paas.vn/public/python:3.9.0
+#python:3.10
 MAINTAINER Thifnmi <thintv@vccloud.vn>
 EXPOSE 9997
 

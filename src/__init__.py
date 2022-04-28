@@ -20,9 +20,6 @@ def create_app():
     OPENAPI_SPEC = """
         servers:
         - url: http://127.0.0.1:9997/
-        - url: https://staging2.bizflycloud.vn/api/iam/v2
-        - url: https://manage.bizflycloud.vn/api/iam/v2
-        - url: https://dev.bizflycloud.vn/api/iam/v2
     """
 
     settings = yaml.safe_load(OPENAPI_SPEC)

@@ -68,13 +68,9 @@ def create_app():
 
     @app.route('/docs')
     @app.route('/docs/<path:path>')
-    @app.route('/<path:uri>/docs/<path:path>')
     def swagger_docs(uri=None, path=None):
         if not path or path == 'index.html':
-            if uri == None:
-                return render_template('index.html', base_url=f"/docs")
-            else:
-                return render_template('index.html', base_url=f"{uri}/docs")
+            return render_template('index.html', base_url=f"/docs")
         else:
             return send_from_directory('../swagger/static', path)
     return app

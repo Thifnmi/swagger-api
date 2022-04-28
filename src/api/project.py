@@ -234,7 +234,7 @@ def createProject():
         "user_uuid": request.headers.get("user_uuid"),
         "user_email": request.headers.get("user_email"),
         "project_name": request.headers.get("project_name"),
-        "description": request.headers.get("user_uuid")
+        "description": request.headers.get("description")
     }
 
     response = [
